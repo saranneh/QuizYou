@@ -1,0 +1,38 @@
+[
+  {
+    "id": "dbacon89",
+    "firstName": "David",
+    "lastName": "Bacon",
+    "email": "dbacon89@bu.edu"
+  },
+  {
+    "id": "saranneh",
+    "firstName": "Saranne",
+    "lastName": "Hobbs",
+    "email": "saranneh@bu.edu"
+  },
+  {
+    "id": "smuren",
+    "firstName": "Sophia",
+    "lastName": "Muren",
+    "email": "smuren@bu.edu"
+  },
+  {
+    "id": "chaman11",
+    "firstName": "Amir M",
+    "lastName": "Chaman",
+    "email": "chaman11@bu.edu"
+  },
+  {
+    "id": "abhikoka",
+    "firstName": "Abhishikth",
+    "lastName": "Koka",
+    "email": "abhikoka@bu.edu"
+  },
+  {
+    "id": "csmith00",
+    "firstName": "Cole",
+    "lastName": "Smith",
+    "email": "csmith00@bu.edu"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "subject": "Testing",
+    "question": "Which type of testing ensures that new code changes do not break existing functionality?",
+    "options": [
+      "Unit Testing",
+      "Regression Testing",
+      "Integration Testing",
+      "System Testing"
+    ],
+    "correctAnswer": 1
+  },
+  {
+    "id": 2,
+    "subject": "Agile",
+    "question": "What is the primary purpose of a Daily Standup meeting in Scrum?",
+    "options": [
+      "To give detailed status updates to the project manager",
+      "To assign tasks to team members for the day",
+      "To sync team progress, identify blockers, and plan the next 24 hours",
+      "To demonstrate finished features to stakeholders"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 3,
+    "subject": "Design Patterns",
+    "question": "Which design pattern restricts the instantiation of a class to one single instance?",
+    "options": [
+      "Factory Pattern",
+      "Observer Pattern",
+      "Singleton Pattern",
+      "Strategy Pattern"
+    ],
+    "correctAnswer": 2
+  },
+  {
+    "id": 4,
+    "subject": "Git",
+    "question": "Which Git command updates your local branch with changes from a remote repository and merges them?",
+    "options": [
+      "git fetch",
+      "git pull",
+      "git push",
+      "git checkout"
+    ],
+    "correctAnswer": 1
+  }
+]

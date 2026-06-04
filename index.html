@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizYou — Software Engineering Exam Platform</title>
+  <meta name="description" content="An interactive exam and quiz dashboard for software engineering teams. Build, test, and track your development knowledge.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <a href="#" class="brand" id="brand-link">
+      <div class="brand-logo">QY</div>
+      <div class="brand-name">QuizYou</div>
+    </a>
+    <div class="user-status">
+      <div class="user-badge">
+        <span class="user-avatar" id="user-status-avatar"></span>
+        <span id="user-status-text">Guest Mode</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main">
+    <div class="glass-container">
+
+      <!-- 1. Landing Screen -->
+      <section id="screen-landing" class="screen active">
+        <h1 class="hero-title">Master Software Engineering</h1>
+        <p class="hero-subtitle">Test your understanding of testing, agile development, design patterns, and deployment. Compete with your classmates and level up your engineering skills.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="btn-landing-start">Enter Student Portal</button>
+          <button class="btn btn-secondary" id="btn-landing-about">Read Docs</button>
+        </div>
+      </section>
+
+      <!-- 2. Authentication Screen -->
+      <section id="screen-auth" class="screen">
+        <h2 class="auth-title">Verify Identity</h2>
+        <p class="auth-desc">Enter your registered BU Student ID to begin the exam session.</p>
+        
+        <div class="alert-box" id="auth-alert">Invalid ID. Only registered students are permitted.</div>
+        
+        <form id="auth-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="student-id">Student ID / Email Prefix</label>
+            <input type="text" id="student-id" class="form-control" placeholder="e.g. abhikoka" required autocomplete="username">
+          </div>
+          <div class="form-group" style="opacity: 0.5;">
+            <label for="student-pw">Password <span style="font-size: 0.75rem; font-weight: normal;">(Upcoming MVP feature)</span></label>
+            <input type="password" id="student-pw" class="form-control" placeholder="••••••••" disabled autocomplete="current-password">
+          </div>
+          <div class="hero-actions" style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" id="btn-auth-submit">Verify & Proceed</button>
+            <button type="button" class="btn btn-secondary" id="btn-auth-back">Back</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 3. Quiz Configuration Screen -->
+      <section id="screen-config" class="screen">
+        <h2 class="config-title">Quiz Configuration</h2>
+        <p class="config-desc">Select your subject and target options to begin the exam.</p>
+        
+        <form id="config-form" onsubmit="return false;">
+          <div class="form-group">
+            <label for="config-subject">Subject Module</label>
+            <select id="config-subject" class="form-control">
+              <option value="all">All Subjects</option>
+              <option value="Testing">Testing & QA</option>
+              <option value="Agile">Agile Scrum</option>
+              <option value="Design Patterns">Design Patterns</option>
+              <option value="Git">Version Control (Git)</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="config-questions">Number of Questions (5 - 40)</label>
+            <input type="number" id="config-questions" class="form-control" min="5" max="40" value="10">
+          </div>
+          
+          <div class="form-group">
+            <label for="config-time">Time Limit</label>
+            <select id="config-time" class="form-control">
+              <option value="5">5 Minutes</option>
+              <option value="10" selected>10 Minutes</option>
+              <option value="20">20 Minutes</option>
+              <option value="30">30 Minutes</option>
+            </select>
+          </div>
+          
+          <div class="hero-actions" style="margin-top: 2.5rem;">
+            <button type="submit" class="btn btn-primary" id="btn-config-start">Start Exam</button>
+            <button type="button" class="btn btn-secondary" id="btn-config-dashboard">View Dashboard</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 4. Active Quiz Screen -->
+      <section id="screen-quiz" class="screen">
+        <div class="quiz-header">
+          <div class="quiz-progress-label">Question <span id="quiz-current-num">1</span> of <span id="quiz-total-num">10</span></div>
+          <div class="quiz-timer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span id="quiz-timer-text">10:00</span>
+          </div>
+        </div>
+        
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="quiz-progress-bar"></div>
+        </div>
+        
+        <div class="question-container">
+          <h3 class="question-text" id="quiz-question-text">Question content goes here...</h3>
+          <div class="options-list" id="quiz-options-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+        
+        <div class="quiz-footer">
+          <button class="btn btn-secondary" id="btn-quiz-prev" style="visibility: hidden;">Previous</button>
+          <button class="btn btn-primary" id="btn-quiz-next">Next Question</button>
+        </div>
+      </section>
+
+      <!-- 5. Results Screen -->
+      <section id="screen-results" class="screen">
+        <div class="results-header">
+          <span class="results-icon">🎉</span>
+          <h2 class="config-title">Exam Complete!</h2>
+          <p class="config-desc" id="results-welcome-message">Great effort, Student!</p>
+        </div>
+        
+        <div class="results-score-box">
+          <div class="score-item">
+            <div class="score-label">Subject</div>
+            <div class="score-value" id="results-subject">All Subjects</div>
+          </div>
+          <div class="score-item">
+            <div class="score-label">Correct Answers</div>
+            <div class="score-value" id="results-raw">8 / 10</div>
+          </div>
+          <div class="score-item">
+            <div class="score-label">Percentage</div>
+            <div class="score-value percentage" id="results-percent">80%</div>
+          </div>
+          <div class="score-item">
+            <div class="score-label">Time Remaining</div>
+            <div class="score-value" id="results-time-taken">02:14</div>
+          </div>
+        </div>
+        
+        <div class="results-actions">
+          <button class="btn btn-primary" id="btn-results-retry">Take Another Exam</button>
+          <button class="btn btn-secondary" id="btn-results-dashboard">View Dashboard</button>
+        </div>
+      </section>
+
+      <!-- 6. Student Dashboard Screen -->
+      <section id="screen-dashboard" class="screen">
+        <h2 class="config-title">Student Dashboard</h2>
+        <p class="config-desc">Track your performance and progress over time.</p>
+        
+        <div class="dashboard-grid">
+          <div class="dash-card">
+            <h3 class="dash-card-title">Performance Metrics</h3>
+            <div class="results-score-box" style="margin-bottom: 0; padding: 0.5rem; background: transparent; border: none;">
+              <div class="score-item">
+                <div class="score-label">Average Score</div>
+                <div class="score-value" id="dash-avg-score">--</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Exams Completed</div>
+                <div class="score-value" id="dash-exams-count">0</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dash-card">
+            <h3 class="dash-card-title">Recent Exam History</h3>
+            <div class="history-list" id="dash-history-list">
+              <div class="history-item" style="color: var(--text-dim);">No exams taken yet.</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="btn-dash-config">Configure New Exam</button>
+          <button class="btn btn-secondary" id="btn-dash-logout">Log Out</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-note">Only registered students can take the exam.</div>
+    <span>QuizYou Project Skeleton &copy; 2026. Made with ❤️ by the SE Team.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

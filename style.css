@@ -1,11 +1,12 @@
 /* QuizYou - Premium Styling System */
 /* QuizYou - Presentation Theme Styling System */
 :root {
-  /* QuizYou Presentation Theme: mint green, charcoal, white, and light gray */
+  /* QuizYou polished presentation theme: same layout size, cleaner visual finish */
 
   --primary: #5CC59B;
   --primary-hover: #46B489;
   --primary-light: #C8F5D6;
+  --primary-soft: #E9FFF1;
   --primary-glow: rgba(92, 197, 155, 0.25);
 
   --secondary: #333333;
@@ -14,10 +15,10 @@
 
   --accent: #A8EFC0;
 
-  --background: #E6E6E6;
+  --background: #E9E9E7;
   --surface: #FFFFFF;
   --surface-hover: #F7F7F7;
-  --surface-border: #CFCFCF;
+  --surface-border: #D2D2D0;
 
   --text: #2B2B2B;
   --text-muted: #666666;
@@ -37,9 +38,9 @@
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.16);
+  --shadow-sm: 0 3px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 18px 42px rgba(0, 0, 0, 0.16);
 
   --max-width: 1100px;
 }
@@ -53,7 +54,9 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgba(92, 197, 155, 0.14), transparent 34rem),
+    linear-gradient(135deg, #eeeeec 0%, var(--background) 45%, #dededc 100%);
   color: var(--text);
   min-height: 100vh;
   display: flex;
@@ -77,7 +80,7 @@ p {
 
 /* App Layout */
 .app-header {
-  background: var(--secondary);
+  background: linear-gradient(135deg, #252525 0%, var(--secondary) 55%, #242424 100%);
   border-bottom: 5px solid var(--primary);
   padding: 1.25rem 2rem;
   position: sticky;
@@ -86,7 +89,7 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .brand {
@@ -97,7 +100,7 @@ p {
 }
 
 .brand-logo {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
   width: 38px;
   height: 38px;
   border-radius: 8px;
@@ -108,7 +111,7 @@ p {
   font-weight: 800;
   font-size: 1.25rem;
   color: var(--secondary);
-  box-shadow: 4px 4px 0 #ffffff;
+  box-shadow: 4px 4px 0 #ffffff, 0 8px 18px rgba(0, 0, 0, 0.18);
 }
 
 .brand-name {
@@ -116,6 +119,8 @@ p {
   font-size: 1.5rem;
   font-weight: 800;
   color: #ffffff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
 .user-status {
@@ -125,8 +130,8 @@ p {
 }
 
 .user-badge {
-  background: #E6E6E6;
-  border: 2px solid #46B489;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid rgba(92, 197, 155, 0.75);
   color: #333333;
   padding: 0.5rem 1rem;
   border-radius: 30px;
@@ -135,6 +140,7 @@ p {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .user-avatar {
@@ -164,13 +170,13 @@ p {
 
 /* Glassmorphism Containers */
 .glass-container {
-  background: var(--surface);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
   border: 2px solid var(--surface-border);
   border-radius: var(--border-radius-lg);
   padding: 2.5rem;
   width: 100%;
   max-width: 600px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
@@ -222,18 +228,19 @@ p {
   cursor: pointer;
   transition: all var(--transition-fast);
   gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .btn-primary {
   background: var(--primary);
   color: var(--secondary);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-primary:active {
@@ -241,9 +248,10 @@ p {
 }
 
 .btn-secondary {
-  background: var(--secondary);
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-hover));
   border: 1px solid var(--secondary);
   color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
 }
 
 .btn-secondary:hover {
@@ -270,7 +278,7 @@ p {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.95rem;
   color: var(--text);
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
   border: 1px solid var(--surface-border);
   border-radius: var(--border-radius-md);
   outline: none;
@@ -280,7 +288,7 @@ p {
 .form-control:focus {
   border-color: var(--primary);
   background: #ffffff;
-  box-shadow: 0 0 0 4px var(--primary-glow);
+  box-shadow: 0 0 0 4px var(--primary-glow), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 select.form-control {
@@ -423,7 +431,7 @@ select.form-control {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.95rem;
   color: var(--text);
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
   border: 1px solid var(--surface-border);
   border-radius: var(--border-radius-md);
   cursor: pointer;
@@ -434,14 +442,14 @@ select.form-control {
 }
 
 .option-btn:hover {
-  background: var(--surface-hover);
+  background: var(--primary-soft, #E9FFF1);
   color: var(--text);
   border-color: var(--primary);
   transform: translateX(4px);
 }
 
 .option-btn.selected {
-  background: var(--primary-light);
+  background: linear-gradient(135deg, var(--primary-light), #eefdf2);
   color: var(--text);
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-glow);
@@ -492,7 +500,7 @@ select.form-control {
 }
 
 .results-score-box {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
   border: 1px solid var(--surface-border);
   border-radius: var(--border-radius-md);
   padding: 1.5rem;
@@ -500,7 +508,7 @@ select.form-control {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .score-item {
@@ -542,12 +550,12 @@ select.form-control {
 }
 
 .dash-card {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
   border: 1px solid var(--surface-border);
   border-left: 6px solid var(--primary);
   border-radius: var(--border-radius-md);
   padding: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .dash-card-title {
@@ -560,6 +568,7 @@ select.form-control {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .history-item {
@@ -629,4 +638,33 @@ select.form-control {
   }
 }
 
+/* Extra polish without changing layout sizes */
+.glass-container,
+.form-control,
+.option-btn,
+.results-score-box,
+.dash-card {
+  backdrop-filter: none;
+}
 
+.form-control:hover,
+.option-btn:hover {
+  border-color: rgba(92, 197, 155, 0.75);
+}
+
+.btn:focus-visible,
+.form-control:focus-visible,
+.option-btn:focus-visible {
+  outline: 3px solid rgba(92, 197, 155, 0.35);
+  outline-offset: 2px;
+}
+
+.dash-card:hover,
+.results-score-box:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.user-badge:hover {
+  background: #ffffff;
+  border-color: var(--primary);
+}

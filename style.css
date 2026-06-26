@@ -126,8 +126,8 @@ p {
 
 .user-badge {
   background: #5CC59B;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  border: 2px solid #46B489;
+  color: #333333;
   padding: 0.5rem 1rem;
   border-radius: 30px;
   font-size: 0.85rem;

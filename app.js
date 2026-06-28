@@ -119,13 +119,16 @@ async function loadData() {
 // Check if user session is saved in localStorage
 function restoreSession() {
   const savedUser = localStorage.getItem('quizyou_user');
+  const savedId = localStorage.getItem('quizyou_userid');
   if (savedUser) {
     try {
       appState.currentUser = JSON.parse(savedUser);
+      appState.currentUserid = JSON.parse(savedId);
       updateHeaderStatus(true);
       navigateTo('config');
     } catch (e) {
       localStorage.removeItem('quizyou_user');
+      localStorage.removeItem('quizyou_userid');
     }
   }
 }
@@ -198,6 +201,7 @@ function setupEventListeners() {
       appState.currentUser = student;
       appState.currentUserid = inputId;
       localStorage.setItem('quizyou_user', JSON.stringify(student));
+      localStorage.setItem('quizyou_userid', JSON.stringify(inputId));
       updateHeaderStatus(true);
       navigateTo('config');
     } else {
@@ -252,7 +256,9 @@ function setupEventListeners() {
 
   document.getElementById('btn-dash-logout').addEventListener('click', () => {
     localStorage.removeItem('quizyou_user');
+    localStorage.removeItem('quizyou_userid');
     appState.currentUser = null;
+    appState.currentUserid = null;
     updateHeaderStatus(false);
     document.getElementById('student-id').value = '';
     navigateTo('landing');
@@ -408,7 +414,7 @@ function selectOption(optionIndex) {
 }
 
 // Finish & grade the exam
-function finishQuiz() {
+async function finishQuiz() {
   clearInterval(appState.timerInterval);
 
   let correctCount = 0;
@@ -421,25 +427,61 @@ function finishQuiz() {
   });
 
   const percentage = Math.round((correctCount / totalQuestions) * 100);
-  const timeTakenSec = (appState.totalTimeLimit * 60) - appState.timerSecondsLeft;
+
+  const timeTakenSec =
+    (appState.totalTimeLimit * 60) - appState.timerSecondsLeft;
+
   const timeTakenMin = Math.floor(timeTakenSec / 60);
   const timeTakenRemainderSec = timeTakenSec % 60;
-  
-  const timeTakenFormatted = `${String(timeTakenMin).padStart(2, '0')}:${String(timeTakenRemainderSec).padStart(2, '0')}`;
- 
-  const rankData = JSON.parse(fs.readFileSync("rankings.json", "utf8"));
-  updateRankings(rankData, appState.activeSubject, appState.currentUserid, percentage ) 
-  const masteryRanking = getStudentRank(rankData,appState.activeSubject,appState.currentUserid)
-  
-  // Update results page
-  document.getElementById('results-welcome-message').textContent = `Excellent effort, ${appState.currentUser.firstName}! Here is your scorecard:`;
-  document.getElementById('results-subject').textContent = getSubjectLabel(appState.activeSubject);
-  document.getElementById('results-raw').textContent = `${correctCount} / ${totalQuestions}`;
-  document.getElementById('results-percent').textContent = `${percentage}%`;
-  document.getElementById('results-rank').textContent = masteryRanking;
-  document.getElementById('results-time-taken').textContent = timeTakenFormatted;
- 
-  // Add to History
+
+  const timeTakenFormatted =
+    `${String(timeTakenMin).padStart(2, '0')}:${String(timeTakenRemainderSec).padStart(2, '0')}`;
+
+  let rankData = [];
+
+  try {
+    const res = await fetch('highscores.json');
+
+    if (!res.ok) throw new Error('Not found');
+
+    rankData = await res.json();
+    appState.students = rankData;
+
+  } catch (err) {
+    console.warn("Rank Data not found", err);
+  }
+
+  updateRankings(
+    rankData,
+    appState.activeSubject,
+    appState.currentUserid,
+    percentage
+  );
+
+  const masteryRanking = getStudentRank(
+    rankData,
+    appState.activeSubject,
+    appState.currentUserid
+  );
+
+  document.getElementById('results-welcome-message').textContent =
+    `Excellent effort, ${appState.currentUser.firstName}! Here is your scorecard:`;
+
+  document.getElementById('results-subject').textContent =
+    getSubjectLabel(appState.activeSubject);
+
+  document.getElementById('results-raw').textContent =
+    `${correctCount} / ${totalQuestions}`;
+
+  document.getElementById('results-percent').textContent =
+    `${percentage}%`;
+
+  document.getElementById('results-rank').textContent =
+    masteryRanking;
+
+  document.getElementById('results-time-taken').textContent =
+    timeTakenFormatted;
+
   saveExamToHistory({
     subject: getSubjectLabel(appState.activeSubject),
     score: `${correctCount}/${totalQuestions}`,
@@ -545,12 +587,12 @@ function updateRankings(data, subjectId, studentId, newScore) {
     const student = subject.students.find(s => s.studentId === studentId);
 
     if (!student) {
-        console.error("Student not found.");
+        console.error("Student not found. Id: "+studentId);
         return;
     }
 
     // Update only if the new score is higher
-    if (newScore > student.highestQuizScore) {
+    if (newScore > student.highestQuizScore || student.highestQuizScore == null) {
         student.highestQuizScore = newScore;
     }
 

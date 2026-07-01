@@ -64,6 +64,7 @@ const FALLBACK_QUESTIONS = [
 // App State
 let appState = {
   currentUser: null,      // Object when logged in
+  currentUserid: null,    //current user's student id
   students: [],           // Loaded students list
   allQuestions: [],       // Loaded question pool
   quizQuestions: [],      // Active filtered questions
@@ -118,13 +119,16 @@ async function loadData() {
 // Check if user session is saved in localStorage
 function restoreSession() {
   const savedUser = localStorage.getItem('quizyou_user');
+  const savedId = localStorage.getItem('quizyou_userid');
   if (savedUser) {
     try {
       appState.currentUser = JSON.parse(savedUser);
+      appState.currentUserid = JSON.parse(savedId);
       updateHeaderStatus(true);
       navigateTo('config');
     } catch (e) {
       localStorage.removeItem('quizyou_user');
+      localStorage.removeItem('quizyou_userid');
     }
   }
 }
@@ -189,14 +193,15 @@ function setupEventListeners() {
     e.preventDefault();
     const inputId = document.getElementById('student-id').value.trim().toLowerCase();
     const alertBox = document.getElementById('auth-alert');
-    
     // Validate student ID
     const student = appState.students.find(s => s.id.toLowerCase() === inputId || s.email.split('@')[0].toLowerCase() === inputId);
     
     if (student) {
       alertBox.style.display = 'none';
       appState.currentUser = student;
+      appState.currentUserid = inputId;
       localStorage.setItem('quizyou_user', JSON.stringify(student));
+      localStorage.setItem('quizyou_userid', JSON.stringify(inputId));
       updateHeaderStatus(true);
       navigateTo('config');
     } else {
@@ -251,7 +256,9 @@ function setupEventListeners() {
 
   document.getElementById('btn-dash-logout').addEventListener('click', () => {
     localStorage.removeItem('quizyou_user');
+    localStorage.removeItem('quizyou_userid');
     appState.currentUser = null;
+    appState.currentUserid = null;
     updateHeaderStatus(false);
     document.getElementById('student-id').value = '';
     navigateTo('landing');
@@ -407,7 +414,7 @@ function selectOption(optionIndex) {
 }
 
 // Finish & grade the exam
-function finishQuiz() {
+async function finishQuiz() {
   clearInterval(appState.timerInterval);
 
   let correctCount = 0;
@@ -420,20 +427,61 @@ function finishQuiz() {
   });
 
   const percentage = Math.round((correctCount / totalQuestions) * 100);
-  const timeTakenSec = (appState.totalTimeLimit * 60) - appState.timerSecondsLeft;
+
+  const timeTakenSec =
+    (appState.totalTimeLimit * 60) - appState.timerSecondsLeft;
+
   const timeTakenMin = Math.floor(timeTakenSec / 60);
   const timeTakenRemainderSec = timeTakenSec % 60;
-  
-  const timeTakenFormatted = `${String(timeTakenMin).padStart(2, '0')}:${String(timeTakenRemainderSec).padStart(2, '0')}`;
 
-  // Update results page
-  document.getElementById('results-welcome-message').textContent = `Excellent effort, ${appState.currentUser.firstName}! Here is your scorecard:`;
-  document.getElementById('results-subject').textContent = getSubjectLabel(appState.activeSubject);
-  document.getElementById('results-raw').textContent = `${correctCount} / ${totalQuestions}`;
-  document.getElementById('results-percent').textContent = `${percentage}%`;
-  document.getElementById('results-time-taken').textContent = timeTakenFormatted;
+  const timeTakenFormatted =
+    `${String(timeTakenMin).padStart(2, '0')}:${String(timeTakenRemainderSec).padStart(2, '0')}`;
 
-  // Add to History
+  let rankData = [];
+
+  try {
+    const res = await fetch('highscores.json');
+
+    if (!res.ok) throw new Error('Not found');
+
+    rankData = await res.json();
+    appState.students = rankData;
+
+  } catch (err) {
+    console.warn("Rank Data not found", err);
+  }
+
+  updateRankings(
+    rankData,
+    appState.activeSubject,
+    appState.currentUserid,
+    percentage
+  );
+
+  const masteryRanking = getStudentRank(
+    rankData,
+    appState.activeSubject,
+    appState.currentUserid
+  );
+
+  document.getElementById('results-welcome-message').textContent =
+    `Excellent effort, ${appState.currentUser.firstName}! Here is your scorecard:`;
+
+  document.getElementById('results-subject').textContent =
+    getSubjectLabel(appState.activeSubject);
+
+  document.getElementById('results-raw').textContent =
+    `${correctCount} / ${totalQuestions}`;
+
+  document.getElementById('results-percent').textContent =
+    `${percentage}%`;
+
+  document.getElementById('results-rank').textContent =
+    masteryRanking;
+
+  document.getElementById('results-time-taken').textContent =
+    timeTakenFormatted;
+
   saveExamToHistory({
     subject: getSubjectLabel(appState.activeSubject),
     score: `${correctCount}/${totalQuestions}`,
@@ -524,4 +572,63 @@ function renderDashboard() {
       historyList.appendChild(el);
     });
   }
+}
+
+function updateRankings(data, subjectId, studentId, newScore) {
+    // Find the subject
+    const subject = data.subjects.find(s => s.subjectId === subjectId);
+
+    if (!subject) {
+        console.error("Subject not found.");
+        return;
+    }
+
+    // Find the student
+    const student = subject.students.find(s => s.studentId === studentId);
+
+    if (!student) {
+        console.error("Student not found. Id: "+studentId);
+        return;
+    }
+
+    // Update only if the new score is higher
+    if (newScore > student.highestQuizScore || student.highestQuizScore == null) {
+        student.highestQuizScore = newScore;
+    }
+
+    // Sort by highest score
+    subject.students.sort((a, b) => b.highestQuizScore - a.highestQuizScore);
+
+    // Assign ranks
+    let currentRank = 1;
+
+    subject.students.forEach((student, index) => {
+        if (
+            index > 0 &&
+            student.highestQuizScore <
+                subject.students[index - 1].highestQuizScore
+        ) {
+            currentRank = index + 1;
+        }
+
+        student.rank = currentRank;
+    });
+}
+
+function getStudentRank(data, subjectId, studentId) {
+    // Find the subject
+    const subject = data.subjects.find(s => s.subjectId === subjectId);
+
+    if (!subject) {
+        return null; // Subject not found
+    }
+
+    // Find the student
+    const student = subject.students.find(s => s.studentId === studentId);
+
+    if (!student) {
+        return null; // Student not found
+    }
+
+    return student.rank;
 }

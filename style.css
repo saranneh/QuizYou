@@ -281,6 +281,17 @@ p {
   transform: translateY(-2px);
 }
 
+.btn-tertiary {
+  background: transparent;
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+}
+
+.btn-tertiary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -623,6 +634,40 @@ select.form-control {
 .app-footer span {
   display: block;
   margin-top: 0.25rem;
+}
+
+/* Tabs container */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+/* Tab button */
+.tab-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+/* Hover */
+.tab-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+}
+
+/* Active tab */
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 0 12px var(--primary-glow);
 }
 
 /* Custom Scrollbar */

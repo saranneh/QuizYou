@@ -128,3 +128,94 @@ export function getStudentRank(data, subjectId, studentId) {
 
   return student.rank;
 }
+
+export async function loadLeaderboards() {
+    const response = await fetch("highscores.json");
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+let currentSubjectIndex = 0;
+
+export function renderLeaderboards(containerId, data) {
+  const tabsContainer = document.getElementById("leaderboard-tabs");
+  const content = document.getElementById("leaderboard-content");
+
+  tabsContainer.innerHTML = "";
+  content.innerHTML = "";
+
+  // Build tabs
+  data.subjects.forEach((subject, index) => {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn";
+    btn.textContent = subject.subjectName;
+
+    if (index === currentSubjectIndex) {
+      btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+      currentSubjectIndex = index;
+      renderLeaderboards(containerId, data);
+    });
+
+    tabsContainer.appendChild(btn);
+  });
+
+  // Render selected subject
+  const subject = data.subjects[currentSubjectIndex];
+  const students = [...subject.students];
+
+  students.sort((a, b) =>
+    (b.highestQuizScore ?? -1) - (a.highestQuizScore ?? -1)
+  );
+
+  const highest = Math.max(
+    ...students.map(s => s.highestQuizScore ?? 0),
+    1
+  );
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `<h2>${subject.subjectName}</h2>`;
+
+  students.forEach((student, index) => {
+    const score = student.highestQuizScore ?? 0;
+
+    let medal = index + 1;
+    if (index === 0) medal = "🥇";
+    else if (index === 1) medal = "🥈";
+    else if (index === 2) medal = "🥉";
+
+    const row = document.createElement("div");
+    row.className = "student";
+
+    if (index === 0) row.classList.add("gold");
+    if (index === 1) row.classList.add("silver");
+    if (index === 2) row.classList.add("bronze");
+
+    row.innerHTML = `
+      <div class="rank">${medal}</div>
+
+      <div class="name">
+        <strong>${student.studentName}</strong>
+        <div class="bar">
+          <div class="fill" style="width:${(score / highest) * 100}%"></div>
+        </div>
+      </div>
+
+      <div class="score">
+        ${student.highestQuizScore ?? "No Score"}
+      </div>
+    `;
+
+    card.appendChild(row);
+  });
+
+  content.appendChild(card);
+}

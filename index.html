@@ -8,6 +8,7 @@
   <meta name="description"
     content="An interactive exam and quiz dashboard for software engineering teams. Build, test, and track your development knowledge.">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="leaderboardstyle.css">
 </head>
 
 <body>
@@ -104,6 +105,7 @@
           <div class="hero-actions" style="margin-top: 2.5rem;">
             <button type="submit" class="btn btn-primary" id="btn-config-start">Start Exam</button>
             <button type="button" class="btn btn-secondary" id="btn-config-dashboard">View Dashboard</button>
+            <button type="button" class="btn btn-tertiary" id="btn-config-leaderboard">View Leaderboards</button>
           </div>
         </form>
       </section>
@@ -175,6 +177,7 @@
         <div class="results-actions">
           <button class="btn btn-primary" id="btn-results-retry">Take Another Exam</button>
           <button class="btn btn-secondary" id="btn-results-dashboard">View Dashboard</button>
+          <button class="btn btn-tertiary" id="btn-results-leaderboard">View Leaderboards</button>
         </div>
       </section>
 
@@ -213,10 +216,18 @@
           <button class="btn btn-secondary" id="btn-dash-logout">Log Out</button>
         </div>
       </section>
+            <!-- 7. LeaderBoard Screen -->
+      <section id="screen-leaderboard" class="screen">
+        <h2>🏆 Quiz Leaderboards</h2>
 
-    </div>
+          <!-- Tabs -->
+          <div id="leaderboard-tabs" class="tabs"></div>
+
+           <!-- Content -->
+         <div id="leaderboard-content"></div>
+      </section>
+  </div>
   </main>
-
 
   <!-- Footer -->
   <footer class="app-footer">

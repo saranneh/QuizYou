@@ -4,7 +4,7 @@ import { loadData } from './api.js';
 import { restoreSession, handleLogin, handleLogout } from './auth.js';
 import { navigateTo } from './navigation.js';
 import { setupQuiz, renderQuestion, finishQuiz } from './quiz.js';
-import { renderDashboard } from './dashboard.js';
+import { renderDashboard, loadLeaderboards, renderLeaderboards} from './dashboard.js';
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', async () => {
@@ -84,6 +84,29 @@ function setupEventListeners() {
     renderDashboard();
     navigateTo('dashboard');
   });
+
+    
+document.getElementById('btn-results-leaderboard').addEventListener('click', async () => {
+    try {
+        const data = await loadLeaderboards();
+        renderLeaderboards("leaderboards", data);
+        navigateTo('leaderboard');
+        console.log("Leaderboards loaded and rendered successfully.");
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+document.getElementById('btn-config-leaderboard').addEventListener('click', async () => {
+  try {
+    const data = await loadLeaderboards();
+    renderLeaderboards("leaderboards", data);
+    navigateTo('leaderboard');
+    console.log("Config → leaderboard loaded");
+  } catch (err) {
+    console.error("Leaderboard error:", err);
+  }
+});
 
   // Dashboard Buttons
   document.getElementById('btn-dash-config').addEventListener('click', () => {

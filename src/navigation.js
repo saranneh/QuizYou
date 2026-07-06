@@ -6,7 +6,8 @@ export const screens = {
   config: document.getElementById('screen-config'),
   quiz: document.getElementById('screen-quiz'),
   results: document.getElementById('screen-results'),
-  dashboard: document.getElementById('screen-dashboard')
+  dashboard: document.getElementById('screen-dashboard'),
+  leaderboard: document.getElementById('screen-leaderboard'),
 };
 
 export function navigateTo(screenKey) {

@@ -1,0 +1,98 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+body{
+    background:#111827;
+    color:white;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:40px;
+    font-size:42px;
+}
+
+#leaderboards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+    gap:30px;
+}
+
+.card{
+    background:#1f2937;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+.card h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:#60a5fa;
+}
+
+.student{
+    display:grid;
+    grid-template-columns:50px 1fr 80px;
+    align-items:center;
+    gap:15px;
+    margin-bottom:14px;
+    padding:12px;
+    border-radius:10px;
+    background:#374151;
+    transition:.3s;
+}
+
+.student:hover{
+    transform:scale(1.02);
+}
+
+.rank{
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.name{
+    display:flex;
+    flex-direction:column;
+}
+
+.score{
+    text-align:right;
+    font-weight:bold;
+}
+
+.bar{
+    margin-top:6px;
+    width:100%;
+    height:8px;
+    background:#4b5563;
+    border-radius:5px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    background:linear-gradient(90deg,#3b82f6,#06b6d4);
+}
+
+.gold{
+    background:#F59E0B;
+    color:#111;
+}
+
+.silver{
+    background:#9CA3AF;
+    color:#111;
+}
+
+.bronze{
+    background:#D97706;
+    color:white;
+}

@@ -41,5 +41,5 @@ export function goBack() {
 
 export function resetNavigationHistory() {
   history.length = 0;
-  currentScreen = 'landing';
+  currentScreen = null;
 }

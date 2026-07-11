@@ -40,6 +40,7 @@
         <div class="hero-actions">
           <button class="btn btn-primary" id="btn-landing-start">Enter Student Portal</button>
           <button class="btn btn-secondary" id="btn-landing-about">Read Docs</button>
+          <button class="btn btn-tertiary" id="btn-landing-register">Register</button>
         </div>
       </section>
 
@@ -64,9 +65,9 @@
           </div>
           <div class="hero-actions" style="margin-top: 2rem;">
             <button type="submit" class="btn btn-primary" id="btn-auth-submit">Verify & Proceed</button>
-            <button type="button" class="btn btn-secondary" id="btn-auth-back">Back</button>
           </div>
         </form>
+        <button class="btn btn-back" id="btn-auth-back">← Back</button>
       </section>
 
       <!-- 3. Quiz Configuration Screen -->
@@ -226,9 +227,84 @@
            <!-- Content -->
          <div id="leaderboard-content"></div>
          <div class="hero-actions">
-          <button class="btn btn-back" id="back-btn">← Back</button>
+          <button class="btn btn-back" id="leaderboard-back-btn">← Back</button>
          </div>
          
+      </section>
+
+      <!-- 8. Registration Screen -->
+      <section id="screen-register" class="screen">
+        <form id="registrationForm">
+
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="firstName"
+            placeholder="Enter first name"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input
+            type="text"
+            class="form-control"
+            id="lastName"
+            placeholder="Enter last name"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="student@example.com"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Enter password"
+            minlength="8"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input
+            type="password"
+            class="form-control"
+            id="confirmPassword"
+            placeholder="Re-enter password"
+            minlength="8"
+            required>
+    </div>
+
+    <div class="form-group">
+        <label for="role" class="form-label">Register As</label>
+        <select id="role" class="form-control" required>
+            <option value="">Select a role...</option>
+            <option value="Student">Student</option>
+            <option value="Professor">Professor</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">
+        Register
+    </button>
+</form>
+    <div class="hero-actions">
+      <button class="btn btn-back" id="register-back-btn">← Back</button>
+    </div>
       </section>
   </div>
   </main>

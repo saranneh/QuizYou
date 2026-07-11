@@ -8,6 +8,7 @@ export const screens = {
   results: document.getElementById('screen-results'),
   dashboard: document.getElementById('screen-dashboard'),
   leaderboard: document.getElementById('screen-leaderboard'),
+  register: document.getElementById('screen-register'),
 };
 
 let currentScreen = 'landing';

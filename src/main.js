@@ -31,14 +31,15 @@ function setupEventListeners() {
     navigateTo('auth');
   });
 
+    // registration form button
+  document.getElementById('btn-landing-register').addEventListener('click', () => {
+    navigateTo('register');
+  });
+
   document.getElementById('btn-landing-about').addEventListener('click', () => {
     alert("QuizYou is a software engineering quiz prototype. It allows team members to verify their student credentials, configure module exams, and review score history.");
   });
 
-  // Authentication Form
-  document.getElementById('btn-auth-back').addEventListener('click', () => {
-    navigateTo('landing');
-  });
 
   document.getElementById('auth-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -118,6 +119,9 @@ document.getElementById('btn-config-leaderboard').addEventListener('click', asyn
     handleLogout();
   });
 
-  // Back Button
-  document.getElementById('back-btn').addEventListener('click', goBack);
+  // Back Buttons
+  document.getElementById('leaderboard-back-btn').addEventListener('click', goBack);
+  document.getElementById('register-back-btn').addEventListener('click', goBack);
+  document.getElementById('btn-auth-back').addEventListener('click', goBack);
+
 }

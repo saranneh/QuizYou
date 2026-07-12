@@ -26,22 +26,31 @@ Our team is composed of the following members:
 ## 🚀 Getting Started
 
 ### Prerequisites
-QuizYou is built as a modular client-side application. No heavy compilers, bundlers, or databases are required to run this first-week visual shell.
+QuizYou has been upgraded to a full MERN-stack application. To run it locally, you will need:
+*   **Node.js** (v14 or higher) installed on your machine.
+*   A **MongoDB Atlas** connection string (or a local MongoDB instance).
 
 ### Local Development / Running the App
-To open the application locally:
+To run the full-stack application locally:
 1.  Clone this repository to your machine.
-2.  **Launch a Local HTTP Server (Required)**:
-    Since the application uses modular ES6 JavaScript (`import`/`export`), browsers block loading modules over the `file://` protocol due to security (CORS) policies. You **must** run a local web server to preview and run the app locally.
-    
-    If you have Python installed, launch a local server inside the repository folder:
+2.  Navigate to the `server` directory:
     ```bash
-    # Python 3
-    python -m http.server 8000
+    cd server
     ```
-    Then navigate to `http://localhost:8000` in your browser.
-    
-    *Alternatively, you can use VS Code's "Live Server" extension, Node's `http-server` package, or any similar server.*
+3.  Install the required backend dependencies:
+    ```bash
+    npm install
+    ```
+4.  Create a `.env` file inside the `server/` folder and add your database credentials:
+    ```env
+    MONGODB_URI="mongodb+srv://<your-username>:<your-password>@cluster.mongodb.net/quizyoudb?appName=QuizYou"
+    JWT_SECRET="your_secret_key"
+    ```
+5.  Start the development server (which also serves the frontend):
+    ```bash
+    npm run dev
+    ```
+6.  Open your browser and navigate to **`http://localhost:5001`**.
 
 ---
 

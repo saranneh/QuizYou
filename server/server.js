@@ -181,7 +181,6 @@ app.get('/api/results/history', authenticate, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 // 7. Bulk Upload Excel Questions (Professor creates a quiz inside a course)
 app.post(
   '/api/admin/courses/:courseId/quizzes/upload-excel',
@@ -190,8 +189,9 @@ app.post(
   async (req, res) => {
     try {
       if (req.user.role !== 'professor') {
-        return res.status(403).json({ error: "Only professors can upload quizzes." });
+        return res.status(403).json({ error: 'Only professors can upload quizzes.' });
       }
+
       if (!req.file) {
         return res.status(400).json({ error: 'Please upload an Excel file.' });
       }
@@ -201,34 +201,93 @@ app.post(
       const rows = xlsx.utils.sheet_to_json(sheet);
 
       const questionsToInsert = [];
+
       const quizTitle = req.query.title || 'Excel Uploaded Quiz';
       const timeLimit = parseInt(req.query.timeLimit) || 10;
 
-      for (let row of rows) {
-        const questionText = row['Question'];
-        const options = [
-          row['Option A'],
-          row['Option B'],
-          row['Option C'],
-          row['Option D']
-        ].filter(Boolean);
+      for (const row of rows) {
+        const questionText = String(row['Question'] || '').trim();
+        const type = String(row['Type'] || 'multiple_choice')
+          .trim()
+          .toLowerCase();
 
-        let corrAnswer = row['Correct Answer'];
-        if (typeof corrAnswer === 'string') {
-          corrAnswer = corrAnswer.trim().toUpperCase().charCodeAt(0) - 65; // A->0, B->1...
+        if (!questionText) continue;
+
+        let question = {
+          question: questionText,
+          type
+        };
+
+        if (type === 'true_false') {
+          question.options = ['True', 'False'];
+
+          const answer = String(row['Correct Answer'] || '')
+            .trim()
+            .toUpperCase();
+
+          if (answer === 'TRUE') {
+            question.correctAnswer = 0;
+          } else if (answer === 'FALSE') {
+            question.correctAnswer = 1;
+          } else {
+            continue; // Invalid true/false answer
+          }
+        }
+        else {
+          const options = [
+            row['Option A'],
+            row['Option B'],
+            row['Option C'],
+            row['Option D']
+          ]
+            .filter(value => value !== undefined && value !== null && value !== '')
+            .map(value => String(value).trim());
+
+          if (options.length < 2) continue;
+
+          question.options = options;
+
+          if (type === 'multiple_choice') {
+            let answer = String(row['Correct Answer'] || '')
+              .trim()
+              .toUpperCase();
+
+            const index = answer.charCodeAt(0) - 65;
+
+            if (index < 0 || index >= options.length) continue;
+
+            question.correctAnswer = index;
+          }
+          else if (type === 'multi_select') {
+            const answers = String(row['Correct Answer'] || '')
+              .toUpperCase()
+              .split(',')
+              .map(a => a.trim())
+              .filter(Boolean);
+
+            const indexes = answers.map(a => a.charCodeAt(0) - 65);
+
+            if (
+              indexes.length === 0 ||
+              indexes.some(i => i < 0 || i >= options.length)
+            ) {
+              continue;
+            }
+
+            question.correctAnswers = [...new Set(indexes)];
+          }
+          else {
+            continue; // Unknown question type
+          }
         }
 
-        if (questionText && options.length === 4 && corrAnswer >= 0 && corrAnswer <= 3) {
-          questionsToInsert.push({
-            question: questionText.trim(),
-            options: options.map(o => String(o).trim()),
-            correctAnswer: corrAnswer
-          });
-        }
+        questionsToInsert.push(question);
       }
 
       if (questionsToInsert.length === 0) {
-        return res.status(400).json({ error: "No valid questions found." });
+        return res.status(400).json({
+          error: 'No valid questions found.'
+        });
       }
 
       const newQuiz = await Quiz.create({
@@ -240,13 +299,12 @@ app.post(
       });
 
       res.json({
-        message: `Successfully created quiz "${quizTitle}" with ${questionsToInsert.length} questions.`
+        message: `Successfully created quiz "${newQuiz.title}" with ${questionsToInsert.length} questions.`,
+        quizId: newQuiz._id
       });
+
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   }
 );
-
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`Server online on port ${PORT}`));

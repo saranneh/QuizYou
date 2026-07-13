@@ -67,6 +67,7 @@ export async function setupQuiz() {
 
   // Load complete quiz details including questions
   const quiz = await fetchQuizDetails(quizId);
+
   if (!quiz || !quiz.questions || quiz.questions.length === 0) {
     alert("No questions found for the selected quiz.");
     return;
@@ -77,16 +78,37 @@ export async function setupQuiz() {
   appState.quizQuestions = quiz.questions;
   appState.activeQuizId = quiz._id;
 
-  // Reset quiz states
+  // Reset quiz state
   appState.currentQuestionIdx = 0;
+
+  // Initialize answers based on question type
   appState.selectedAnswers = {};
+
+  quiz.questions.forEach((question, index) => {
+    switch (question.type) {
+      case 'multi_select':
+        // Store an array of selected option indexes
+        appState.selectedAnswers[index] = [];
+        break;
+
+      case 'multiple_choice':
+      case 'true_false':
+      default:
+        // Store a single selected option index
+        appState.selectedAnswers[index] = null;
+        break;
+    }
+  });
+
   appState.timerSecondsLeft = quiz.timeLimit * 60;
 
-  // Render first question
+  // Render the first question
   renderQuestion();
+
+  // Navigate to the quiz screen
   navigateTo('quiz');
 
-  // Start countdown timer
+  // Start the countdown timer
   startTimer();
 }
 
@@ -131,67 +153,97 @@ export function renderQuestion() {
   const current = appState.currentQuestionIdx;
   const question = appState.quizQuestions[current];
 
-  // Update headers
   document.getElementById('quiz-current-num').textContent = current + 1;
   document.getElementById('quiz-total-num').textContent = total;
 
-  // Update progress bar
-  const progressPercent = ((current) / total) * 100;
-  document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+  document.getElementById('quiz-progress-bar').style.width =
+    `${(current / total) * 100}%`;
 
-  // Render question text
-  document.getElementById('quiz-question-text').textContent = question.question;
+  document.getElementById('quiz-question-text').textContent =
+    question.question;
 
-  // Render options list
   const optionsList = document.getElementById('quiz-options-list');
   optionsList.innerHTML = '';
+
+  const isMulti = question.type === 'multi_select';
 
   question.options.forEach((option, idx) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
-    if (appState.selectedAnswers[current] === idx) {
-      btn.classList.add('selected');
+
+    const selected = appState.selectedAnswers[current];
+
+    if (isMulti) {
+      if (Array.isArray(selected) && selected.includes(idx)) {
+        btn.classList.add('selected');
+      }
+    } else {
+      if (selected === idx) {
+        btn.classList.add('selected');
+      }
     }
 
-    const indexLabel = String.fromCharCode(65 + idx); // A, B, C, D...
-    btn.innerHTML = `<span style="display: flex; align-items: center;"><span class="option-index">${indexLabel}</span><span>${option}</span></span>`;
-    
-    btn.addEventListener('click', () => {
-      selectOption(idx);
-    });
+    const letter = String.fromCharCode(65 + idx);
+
+    btn.innerHTML = `
+      <span style="display:flex;align-items:center;">
+        <span class="option-index">${letter}</span>
+        <span>${option}</span>
+      </span>
+    `;
+
+    btn.onclick = () => selectOption(idx);
 
     optionsList.appendChild(btn);
   });
 
-  // Update bottom controls
   const prevBtn = document.getElementById('btn-quiz-prev');
   const nextBtn = document.getElementById('btn-quiz-next');
 
-  if (current === 0) {
-    prevBtn.style.visibility = 'hidden';
-  } else {
-    prevBtn.style.visibility = 'visible';
-  }
-
-  if (current === total - 1) {
-    nextBtn.textContent = 'Submit Exam';
-  } else {
-    nextBtn.textContent = 'Next Question';
-  }
+  prevBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+  nextBtn.textContent =
+    current === total - 1 ? 'Submit Exam' : 'Next Question';
 }
 
 export function selectOption(optionIndex) {
-  appState.selectedAnswers[appState.currentQuestionIdx] = optionIndex;
-  
-  // Highlight selection immediately
-  const options = document.querySelectorAll('.option-btn');
-  options.forEach((btn, idx) => {
-    if (idx === optionIndex) {
-      btn.classList.add('selected');
+  const question =
+    appState.quizQuestions[appState.currentQuestionIdx];
+
+  const buttons = document.querySelectorAll('.option-btn');
+
+  if (question.type === 'multi_select') {
+    let selected =
+      appState.selectedAnswers[appState.currentQuestionIdx] || [];
+
+    if (selected.includes(optionIndex)) {
+      selected = selected.filter(i => i !== optionIndex);
     } else {
-      btn.classList.remove('selected');
+      selected.push(optionIndex);
     }
-  });
+
+    selected.sort((a, b) => a - b);
+
+    appState.selectedAnswers[appState.currentQuestionIdx] =
+      selected;
+
+    buttons.forEach((btn, idx) => {
+      btn.classList.toggle(
+        'selected',
+        selected.includes(idx)
+      );
+    });
+
+  } else {
+    appState.selectedAnswers[appState.currentQuestionIdx] =
+      optionIndex;
+
+    buttons.forEach((btn, idx) => {
+      btn.classList.toggle(
+        'selected',
+        idx === optionIndex
+      );
+    });
+  }
 }
 
 export async function finishQuiz() {
@@ -201,10 +253,33 @@ export async function finishQuiz() {
   const totalQuestions = appState.quizQuestions.length;
 
   appState.quizQuestions.forEach((q, idx) => {
-    if (appState.selectedAnswers[idx] === q.correctAnswer) {
+
+  const answer = appState.selectedAnswers[idx];
+
+  if (q.type === 'multi_select') {
+
+    const student = Array.isArray(answer)
+      ? [...answer].sort((a,b)=>a-b)
+      : [];
+
+    const correct = [...q.correctAnswers].sort((a,b)=>a-b);
+
+    if (
+      student.length === correct.length &&
+      student.every((v,i)=>v===correct[i])
+    ) {
       correctCount++;
     }
-  });
+
+  } else {
+
+    if (answer === q.correctAnswer) {
+      correctCount++;
+    }
+
+  }
+
+});
 
   const percentage = Math.round((correctCount / totalQuestions) * 100);
 

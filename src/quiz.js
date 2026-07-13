@@ -12,6 +12,13 @@ export async function populateCourseAndQuizzes() {
   const courseDropdown = document.getElementById('config-course');
   const quizDropdown = document.getElementById('config-quiz');
   
+  // Show Professor Portal button if the user is a professor or admin
+  const adminBtn = document.getElementById('btn-config-admin');
+  if (adminBtn) {
+    const userRole = appState.currentUser ? appState.currentUser.role : 'student';
+    adminBtn.style.display = (userRole === 'professor' || userRole === 'admin') ? 'block' : 'none';
+  }
+
   if (!courseDropdown || !quizDropdown) return;
 
   const courses = await fetchCourses();
@@ -47,13 +54,6 @@ export async function populateCourseAndQuizzes() {
 
   // Trigger initial populate
   await courseDropdown.onchange();
-
-  // Show Professor Portal button if the user is a professor or admin
-  const adminBtn = document.getElementById('btn-config-admin');
-  if (adminBtn) {
-    const userRole = appState.currentUser ? appState.currentUser.role : 'student';
-    adminBtn.style.display = (userRole === 'professor' || userRole === 'admin') ? 'block' : 'none';
-  }
 }
 
 export async function setupQuiz() {

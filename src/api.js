@@ -10,22 +10,47 @@ function getHeaders() {
   };
 }
 
-export async function loadData() {
-  // Empty mock placeholder as fetching is now dynamic based on login state
-  console.log("QuizYou APIs connected to backend.");
-}
+// export async function loadData() {
+//   // Empty mock placeholder as fetching is now dynamic based on login state
+//   console.log("QuizYou APIs connected to backend.");
+// }
 
+// export async function fetchCourses() {
+//   try {
+//     const res = await fetch(`${BACKEND_URL}/api/courses`, {
+//       headers: getHeaders()
+//     });
+//     if (!res.ok) throw new Error("Failed to fetch courses");
+//     return await res.json();
+//   } catch (err) {
+//     console.error("API Course Fetch Error:", err);
+//     return [];
+//   }
+// }
+//Dummy data for testing without backend. Remove this when backend is ready.
 export async function fetchCourses() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/courses`, {
-      headers: getHeaders()
-    });
-    if (!res.ok) throw new Error("Failed to fetch courses");
-    return await res.json();
-  } catch (err) {
-    console.error("API Course Fetch Error:", err);
-    return [];
-  }
+  return [
+    {
+      id: 1,
+      title: "Introduction to JavaScript",
+      description: "Learn JavaScript fundamentals.",
+      instructor: "Sarah Williams",
+      category: "Programming",
+      level: "Beginner",
+      duration: "8 weeks",
+      price: 49.99
+    },
+    {
+      id: 2,
+      title: "React Development Bootcamp",
+      description: "Build modern React applications.",
+      instructor: "Michael Brown",
+      category: "Web Development",
+      level: "Intermediate",
+      duration: "10 weeks",
+      price: 79.99
+    }
+  ];
 }
 
 export async function fetchQuizzesForCourse(courseId) {

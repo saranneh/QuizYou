@@ -1,6 +1,6 @@
 // QuizYou Main Orchestrator / Entry Module
 import { appState } from './state.js';
-import { loadData } from './api.js';
+//import { loadData } from './api.js';
 import { restoreSession, handleLogin, handleLogout } from './auth.js';
 import { navigateTo } from './navigation.js';
 import { setupQuiz, renderQuestion, finishQuiz } from './quiz.js';
@@ -11,7 +11,7 @@ import { populateAdminCourses, setupAdminPanel } from './admin.js';
 // Initialize Application
 async function init() {
   setupEventListeners();
-  await loadData();
+ // await loadData();
   restoreSession();
 }
 

@@ -1,5 +1,14 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../.env')
 });
+
+// Use Cloudflare DNS instead of the local resolver at 127.0.0.1.
+// This prevents MongoDB Atlas SRV lookups from failing with ECONNREFUSED.
+const dns = require("node:dns");
+dns.setServers(["1.1.1.1", "1.0.0.1"]);
+const dns = require("node:dns");
+
+dns.setServers(["1.1.1.1", "1.0.0.1"]);
+
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');

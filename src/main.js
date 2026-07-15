@@ -7,10 +7,12 @@ import { setupQuiz, renderQuestion, finishQuiz } from './quiz.js';
 import { renderDashboard, loadLeaderboards, renderLeaderboards} from './dashboard.js';
 import { goBack } from './navigation.js';
 import { populateAdminCourses, setupAdminPanel } from './admin.js';
+import { initAdminManagement, setupAdminManagementHandlers } from './admin_management.js';
 
 // Initialize Application
 async function init() {
   setupEventListeners();
+  setupAdminManagementHandlers();
  // await loadData();
   restoreSession();
 }
@@ -136,6 +138,15 @@ document.getElementById('btn-config-leaderboard').addEventListener('click', asyn
     await populateAdminCourses();
     navigateTo('admin');
   });
+
+  // Registration Management Navigation
+  const btnConfigRegistration = document.getElementById('btn-config-registration');
+  if (btnConfigRegistration) {
+    btnConfigRegistration.addEventListener('click', async () => {
+      await initAdminManagement();
+      navigateTo('admin-management');
+    });
+  }
 
   setupAdminPanel();
 }

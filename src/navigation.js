@@ -10,6 +10,7 @@ export const screens = {
   leaderboard: document.getElementById('screen-leaderboard'),
   register: document.getElementById('screen-register'),
   admin: document.getElementById('screen-admin'),
+  'admin-management': document.getElementById('screen-admin-management'),
 };
 
 let currentScreen = 'landing';

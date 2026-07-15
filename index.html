@@ -96,6 +96,7 @@
             <button type="button" class="btn btn-secondary" id="btn-config-dashboard">View Dashboard</button>
             <button type="button" class="btn btn-tertiary" id="btn-config-leaderboard">View Leaderboards</button>
             <button type="button" class="btn btn-secondary" id="btn-config-admin" style="display: none;">Professor Portal</button>
+            <button type="button" class="btn btn-secondary" id="btn-config-registration" style="display: none;">Registration Management</button>
           </div>
         </form>
       </section>
@@ -255,8 +256,79 @@
           </div>
         </form>
       </section>
+      <!-- 8. Registration Management Screen (Admin Only) -->
+      <section id="screen-admin-management" class="screen">
+        <div class="glass-container">
+          <h2 class="section-title">Registration Management</h2>
+          <div class="tabs-container" style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+            <button class="btn btn-secondary tab-btn active" data-tab="admin-courses">Course Management</button>
+            <button class="btn btn-secondary tab-btn" data-tab="admin-users">User Management</button>
+            <button class="btn btn-secondary tab-btn" data-tab="admin-roster">Roster Assignment</button>
+          </div>
 
-      <!-- 8. Registration Screen -->
+          <!-- Course Management Tab -->
+          <div id="admin-courses" class="admin-tab-content active" style="display: block;">
+            <form id="admin-course-form" style="margin-bottom: 2rem;">
+              <h3 style="color: var(--primary);">Create Course</h3>
+              <div class="form-group"><input type="text" id="course-code" class="form-control" placeholder="Course Code (e.g. CS101)" required></div>
+              <div class="form-group"><input type="text" id="course-name" class="form-control" placeholder="Course Name" required></div>
+              <div class="form-group"><input type="text" id="course-desc" class="form-control" placeholder="Description (Optional)"></div>
+              <button type="submit" class="btn btn-primary">Create Course</button>
+            </form>
+            <h3 style="color: var(--primary);">Existing Courses</h3>
+            <div id="admin-courses-list" style="max-height: 200px; overflow-y: auto; text-align: left;"></div>
+          </div>
+
+          <!-- User Management Tab -->
+          <div id="admin-users" class="admin-tab-content" style="display: none;">
+            <form id="admin-user-form" style="margin-bottom: 2rem;">
+              <h3 style="color: var(--primary);">Create User</h3>
+              <div class="form-group"><input type="text" id="add-user-id" class="form-control" placeholder="User ID" required></div>
+              <div class="form-group"><input type="text" id="add-user-firstname" class="form-control" placeholder="First Name" required></div>
+              <div class="form-group"><input type="text" id="add-user-lastname" class="form-control" placeholder="Last Name" required></div>
+              <div class="form-group"><input type="email" id="add-user-email" class="form-control" placeholder="Email" required></div>
+              <div class="form-group"><input type="password" id="add-user-password" class="form-control" placeholder="Password" required></div>
+              <div class="form-group">
+                <select id="add-user-role" class="form-control" required>
+                  <option value="student">Student</option>
+                  <option value="professor">Professor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Create User</button>
+            </form>
+            <h3 style="color: var(--primary);">Existing Users</h3>
+            <input type="text" id="admin-user-search" class="form-control" placeholder="Search by name, ID, or email..." style="margin-bottom: 1rem;">
+            <div id="admin-users-list" style="max-height: 200px; overflow-y: auto; text-align: left;"></div>
+          </div>
+
+          <!-- Roster Assignment Tab -->
+          <div id="admin-roster" class="admin-tab-content" style="display: none;">
+            <form id="admin-section-form" style="margin-bottom: 2rem;">
+              <h3 style="color: var(--primary);">Create Section</h3>
+              <div class="form-group"><select id="roster-course" class="form-control" required><option value="">Select Course</option></select></div>
+              <div class="form-group"><select id="roster-prof" class="form-control" required><option value="">Select Professor</option></select></div>
+              <div class="form-group"><input type="text" id="roster-section-code" class="form-control" placeholder="Section Code (e.g. A1)" required></div>
+              <div class="form-group"><input type="text" id="roster-semester" class="form-control" placeholder="Semester (e.g. Fall 2026)" required></div>
+              <button type="submit" class="btn btn-primary">Create Section</button>
+            </form>
+
+            <form id="admin-enroll-form">
+              <h3 style="color: var(--primary);">Enroll Students in Section</h3>
+              <div class="form-group"><select id="enroll-section" class="form-control" required><option value="">Select Section</option></select></div>
+              <div class="form-group" style="text-align: left;">
+                <label style="display: block; margin-bottom: 0.5rem;">Select Students</label>
+                <div id="enroll-students-checkboxes" class="form-control" style="height: 200px; overflow-y: auto; text-align: left; background: rgba(0,0,0,0.2);"></div>
+              </div>
+              <button type="submit" class="btn btn-primary">Enroll Students</button>
+            </form>
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="btn-admin-management-back" style="margin-top: 2rem;">Back to Config</button>
+        </div>
+      </section>
+
+      <!-- 9. Registration Screen -->
       <section id="screen-register" class="screen">
         <form id="registrationForm">
 

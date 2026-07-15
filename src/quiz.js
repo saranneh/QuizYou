@@ -14,9 +14,15 @@ export async function populateCourseAndQuizzes() {
   
   // Show Professor Portal button if the user is a professor or admin
   const adminBtn = document.getElementById('btn-config-admin');
+  const regBtn = document.getElementById('btn-config-registration');
+  const userRole = appState.currentUser ? appState.currentUser.role : 'student';
+  
   if (adminBtn) {
-    const userRole = appState.currentUser ? appState.currentUser.role : 'student';
     adminBtn.style.display = (userRole === 'professor' || userRole === 'admin') ? 'block' : 'none';
+  }
+  
+  if (regBtn) {
+    regBtn.style.display = (userRole === 'admin') ? 'block' : 'none';
   }
 
   if (!courseDropdown || !quizDropdown) return;

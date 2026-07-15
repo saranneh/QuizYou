@@ -368,6 +368,8 @@ select.form-control option {
 .hero-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Auth View Styling */
